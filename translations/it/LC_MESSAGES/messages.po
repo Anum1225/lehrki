@@ -1,0 +1,100 @@
+# Italian translations for LehrKI.
+# Copyright (C) 2025 LehrKI
+# This file is distributed under the same license as the LehrKI project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LehrKI 1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-08-30 12:00+0000\n"
+"PO-Revision-Date: 2025-08-30 12:00+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+msgid "Access denied. Teacher access required."
+msgstr "Accesso negato. Accesso insegnante richiesto."
+
+msgid "Access denied. Admin access required."
+msgstr "Accesso negato. Accesso amministratore richiesto."
+
+msgid "Premium subscription required for Parent Letter Generator."
+msgstr "Abbonamento premium richiesto per il generatore di lettere ai genitori."
+
+msgid "Insufficient tokens. Please upgrade your subscription."
+msgstr "Token insufficienti. Si prega di aggiornare l'abbonamento."
+
+msgid "Please provide student context."
+msgstr "Si prega di fornire il contesto dello studente."
+
+msgid "Parent letter generated successfully!"
+msgstr "Lettera ai genitori generata con successo!"
+
+msgid "Error generating letter: {}"
+msgstr "Errore nella generazione della lettera: {}"
+
+msgid "Subscription activated successfully!"
+msgstr "Abbonamento attivato con successo!"
+
+msgid "Subscription cancelled."
+msgstr "Abbonamento annullato."
+
+msgid "Error creating checkout session: {}"
+msgstr "Errore nella creazione della sessione di pagamento: {}"
+
+msgid "Error accessing billing portal: {}"
+msgstr "Errore nell'accesso al portale di fatturazione: {}"
+
+msgid "Message is required"
+msgstr "Messaggio richiesto"
+
+msgid "Chatbot is currently unavailable"
+msgstr "Il chatbot è attualmente non disponibile"
+
+msgid "Access denied."
+msgstr "Accesso negato."
+
+msgid "Quiz submitted successfully!"
+msgstr "Quiz inviato con successo!"
+
+msgid "I'm sorry, I'm currently unavailable. Please try again later."
+msgstr "Mi dispiace, attualmente non sono disponibile. Riprova più tardi."
+
+msgid "Welcome to LehrKI"
+msgstr "Benvenuto su LehrKI"
+
+msgid "AI-Powered Educational Tools"
+msgstr "Strumenti educativi basati sull'IA"
+
+msgid "Dashboard"
+msgstr "Cruscotto"
+
+msgid "Parent Letter Generator"
+msgstr "Generatore di lettere ai genitori"
+
+msgid "Quiz Creator"
+msgstr "Creatore di quiz"
+
+msgid "Assessment Center"
+msgstr "Centro di valutazione"
+
+msgid "Subscription"
+msgstr "Abbonamento"
+
+msgid "Login"
+msgstr "Accedi"
+
+msgid "Logout"
+msgstr "Esci"
+
+msgid "Tokens"
+msgstr "Token"
+
+msgid "Settings"
+msgstr "Impostazioni"

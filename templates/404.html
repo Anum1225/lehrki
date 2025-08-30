@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Page Not Found') }} - LehrKI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-page">
+                <div class="error-icon mb-4">
+                    <i class="fas fa-search text-muted" style="font-size: 6rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold text-muted mb-3">404</h1>
+                <h2 class="mb-3">{{ _('Page Not Found') }}</h2>
+                <p class="lead text-muted mb-4">
+                    {{ _('The page you are looking for doesn\'t exist or has been moved.') }}
+                </p>
+                
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>{{ _('Go to Dashboard') }}
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>{{ _('Go Home') }}
+                        </a>
+                    {% endif %}
+                    <button onclick="history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>{{ _('Go Back') }}
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <small class="text-muted">
+                        {{ _('If you believe this is an error, please ') }}
+                        <a href="#" class="text-decoration-none">{{ _('contact support') }}</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 2rem 0;
+}
+
+.error-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+</style>
+{% endblock %}

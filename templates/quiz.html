@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - LehrKI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Quiz Header -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">{{ quiz.title }}</h4>
+                            <small>{{ quiz.description or _('No description available') }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-light text-primary">{{ quiz.language.upper() }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <i class="fas fa-questions text-primary"></i>
+                                <div class="fw-bold">{{ questions|length }}</div>
+                                <small class="text-muted">{{ _('Questions') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <i class="fas fa-tag text-success"></i>
+                                <div class="fw-bold">{{ quiz.topic }}</div>
+                                <small class="text-muted">{{ _('Topic') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <i class="fas fa-level-up-alt text-info"></i>
+                                <div class="fw-bold">{{ quiz.level.title() }}</div>
+                                <small class="text-muted">{{ _('Level') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <i class="fas fa-clock text-warning"></i>
+                                <div class="fw-bold" id="timer">--:--</div>
+                                <small class="text-muted">{{ _('Time') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Questions -->
+            <form id="quizForm">
+                {% for question in questions %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ _('Question') }} {{ loop.index }} {{ _('of') }} {{ questions|length }}</h6>
+                                <span class="badge bg-secondary">{{ question.question_type.replace('_', ' ').title() }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="question-text mb-3">{{ question.question_text }}</p>
+                            
+                            {% if question.question_type == 'multiple_choice' and question.options %}
+                                <div class="row">
+                                    {% for option in question.options %}
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" 
+                                                       name="question_{{ loop.index0 }}" 
+                                                       id="q{{ loop.index0 }}_opt{{ loop.index }}" 
+                                                       value="{{ option }}" required>
+                                                <label class="form-check-label" for="q{{ loop.index0 }}_opt{{ loop.index }}">
+                                                    {{ option }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% elif question.question_type == 'true_false' %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                                   name="question_{{ loop.index0 }}" 
+                                                   id="q{{ loop.index0 }}_true" 
+                                                   value="True" required>
+                                            <label class="form-check-label" for="q{{ loop.index0 }}_true">
+                                                <i class="fas fa-check text-success me-2"></i>{{ _('True') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                                   name="question_{{ loop.index0 }}" 
+                                                   id="q{{ loop.index0 }}_false" 
+                                                   value="False" required>
+                                            <label class="form-check-label" for="q{{ loop.index0 }}_false">
+                                                <i class="fas fa-times text-danger me-2"></i>{{ _('False') }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif question.question_type == 'short_answer' %}
+                                <div class="mb-3">
+                                    <textarea class="form-control" 
+                                              name="question_{{ loop.index0 }}" 
+                                              rows="3" 
+                                              placeholder="{{ _('Enter your answer here...') }}" 
+                                              required></textarea>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" style="width: {{ (loop.index / questions|length * 100) }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Submit Section -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="mb-3">{{ _('Ready to Submit?') }}</h5>
+                        <p class="text-muted mb-4">{{ _('Make sure you have answered all questions before submitting.') }}</p>
+                        
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>{{ _('Back to Dashboard') }}
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="fas fa-check me-2"></i>{{ _('Submit Quiz') }}
+                                <span class="spinner-border spinner-border-sm ms-2 d-none" id="submitSpinner"></span>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                {{ _('Your answers will be automatically saved when you submit.') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-trophy me-2"></i>{{ _('Quiz Completed!') }}
+                </h5>
+            </div>
+            <div class="modal-body text-center">
+                <div id="scoreDisplay" class="mb-4">
+                    <!-- Score will be inserted here -->
+                </div>
+                <div id="feedbackDisplay">
+                    <!-- Feedback will be inserted here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ url_for('student_dashboard') }}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>{{ _('Back to Dashboard') }}
+                </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="retakeQuiz()">
+                    <i class="fas fa-redo me-2"></i>{{ _('Retake Quiz') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let startTime = new Date();
+let timerInterval;
+
+// Start timer
+function startTimer() {
+    timerInterval = setInterval(function() {
+        const now = new Date();
+        const elapsed = Math.floor((now - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timer').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+// Initialize timer on page load
+document.addEventListener('DOMContentLoaded', function() {
+    startTimer();
+});
+
+// Handle quiz submission
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('submitSpinner');
+    
+    // Disable submit button and show spinner
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+    
+    // Collect answers
+    const formData = new FormData(this);
+    const answers = {};
+    
+    for (let [key, value] of formData.entries()) {
+        const questionIndex = key.replace('question_', '');
+        answers[questionIndex] = value;
+    }
+    
+    // Submit to server
+    fetch(`{{ url_for('submit_quiz', quiz_id=quiz.id) }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(answers)
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(timerInterval);
+        showResults(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ _("An error occurred while submitting the quiz. Please try again.") }}');
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+    });
+});
+
+function showResults(data) {
+    const score = Math.round(data.score);
+    let scoreClass = 'text-success';
+    let scoreIcon = 'fa-trophy';
+    
+    if (score < 60) {
+        scoreClass = 'text-danger';
+        scoreIcon = 'fa-times-circle';
+    } else if (score < 80) {
+        scoreClass = 'text-warning';
+        scoreIcon = 'fa-medal';
+    }
+    
+    document.getElementById('scoreDisplay').innerHTML = `
+        <div class="display-3 ${scoreClass} mb-3">
+            <i class="fas ${scoreIcon} me-2"></i>${score}%
+        </div>
+        <h4>${getScoreMessage(score)}</h4>
+    `;
+    
+    if (data.feedback) {
+        document.getElementById('feedbackDisplay').innerHTML = `
+            <div class="alert alert-info text-start">
+                <h6>{{ _('Feedback:') }}</h6>
+                <p class="mb-0">${data.feedback}</p>
+            </div>
+        `;
+    }
+    
+    const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+    resultsModal.show();
+}
+
+function getScoreMessage(score) {
+    if (score >= 90) return '{{ _("Excellent work!") }}';
+    if (score >= 80) return '{{ _("Great job!") }}';
+    if (score >= 70) return '{{ _("Good effort!") }}';
+    if (score >= 60) return '{{ _("Keep practicing!") }}';
+    return '{{ _("Need more study time!") }}';
+}
+
+function retakeQuiz() {
+    location.reload();
+}
+
+// Auto-save progress (optional)
+let autoSaveInterval = setInterval(function() {
+    const formData = new FormData(document.getElementById('quizForm'));
+    const answers = {};
+    
+    for (let [key, value] of formData.entries()) {
+        const questionIndex = key.replace('question_', '');
+        answers[questionIndex] = value;
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('quiz_{{ quiz.id }}_progress', JSON.stringify(answers));
+}, 30000); // Save every 30 seconds
+
+// Restore progress on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const saved = localStorage.getItem('quiz_{{ quiz.id }}_progress');
+    if (saved) {
+        const answers = JSON.parse(saved);
+        for (let questionIndex in answers) {
+            const input = document.querySelector(`[name="question_${questionIndex}"][value="${answers[questionIndex]}"]`);
+            if (input) {
+                if (input.type === 'radio') {
+                    input.checked = true;
+                } else {
+                    input.value = answers[questionIndex];
+                }
+            }
+        }
+    }
+});
+
+// Clear saved progress on successful submission
+window.addEventListener('beforeunload', function() {
+    localStorage.removeItem('quiz_{{ quiz.id }}_progress');
+});
+</script>
+
+<style>
+.stat-item {
+    padding: 1rem 0;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.question-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.form-check-label {
+    cursor: pointer;
+    padding: 0.5rem 0;
+}
+
+.form-check-input:checked + .form-check-label {
+    font-weight: bold;
+}
+
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

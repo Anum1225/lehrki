@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">{{ _('Welcome to LehrKI') }}</h1>
+                <p class="lead mb-4">{{ _('AI-Powered Educational Tools') }}</p>
+                <p class="mb-4">
+                    Empower your teaching with intelligent tools designed for modern education. 
+                    Generate professional parent letters, create engaging quizzes, and get AI-powered assistance - all in multiple languages.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>{{ _('Get Started') }}
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>{{ _('Learn More') }}
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-graduation-cap" style="font-size: 12rem; opacity: 0.1;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">{{ _('Powerful Features for Modern Education') }}</h2>
+                <p class="text-muted">
+                    {{ _('Our platform combines artificial intelligence with educational expertise to provide tools that enhance teaching and learning.') }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-envelope-open-text text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('Parent Letter Generator') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Generate professional, personalized letters to parents in multiple languages with AI assistance.') }}
+                    </p>
+                    <span class="badge bg-primary">{{ _('Premium Feature') }}</span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-question-circle text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('Quiz Creator') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Create engaging quizzes and assessments with automatic grading and detailed feedback.') }}
+                    </p>
+                    <span class="badge bg-success">{{ _('Free & Premium') }}</span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-chart-line text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('Assessment Center') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Comprehensive assessment tools with AI-powered feedback and progress tracking.') }}
+                    </p>
+                    <span class="badge bg-info">{{ _('Premium Feature') }}</span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-robot text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('AI Assistant') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Get instant help and educational guidance from our multilingual AI chatbot.') }}
+                    </p>
+                    <span class="badge bg-warning">{{ _('All Users') }}</span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-globe text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('Multilingual Support') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Full support for German, French, Italian, and English in both interface and AI outputs.') }}
+                    </p>
+                    <span class="badge bg-danger">{{ _('All Features') }}</span>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100 text-center p-4 border rounded">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-users text-dark" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4>{{ _('Role-Based Access') }}</h4>
+                    <p class="text-muted">
+                        {{ _('Tailored experiences for students, teachers, and administrators with appropriate permissions.') }}
+                    </p>
+                    <span class="badge bg-dark">{{ _('All Users') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">{{ _('Choose Your Plan') }}</h2>
+                <p class="text-muted">
+                    {{ _('Start free and upgrade as you grow. All plans include multilingual support.') }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header text-center bg-light">
+                        <h4>{{ _('Student') }}</h4>
+                        <div class="display-4 fw-bold">{{ _('Free') }}</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Take public quizzes') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Basic progress tracking') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('AI chatbot access') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Multilingual interface') }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-outline-primary">{{ _('Get Started') }}</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h4>{{ _('Teacher') }}</h4>
+                        <div class="display-4 fw-bold">$10<small>/mo</small></div>
+                        <small>1,000 tokens included</small>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('All student features') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Parent Letter Generator') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Quiz Creator & Builder') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Assessment Center') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Usage analytics') }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-primary">{{ _('Start Premium') }}</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header text-center bg-dark text-white">
+                        <h4>{{ _('Enterprise') }}</h4>
+                        <div class="display-4 fw-bold">$50<small>/mo</small></div>
+                        <small>10,000 tokens included</small>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('All teacher features') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Admin dashboard') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('User management') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Advanced analytics') }}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>{{ _('Priority support') }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-dark">{{ _('Contact Sales') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">{{ _('Ready to Transform Your Teaching?') }}</h2>
+                <p class="lead mb-4">
+                    {{ _('Join thousands of educators who are already using AI to enhance their teaching experience.') }}
+                </p>
+                <a href="{{ url_for('replit_auth.login') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket me-2"></i>{{ _('Start Free Today') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
