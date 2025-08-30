@@ -12,6 +12,10 @@ import CommunityForum from './pages/CommunityForum';
 import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ParentLetterGenerator from './pages/ParentLetterGenerator';
+import Pricing from './pages/Pricing';
+import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
 
 // Components
 import Navbar from './components/Navbar';
@@ -71,6 +75,31 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Analytics />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/parent-letters" 
+                element={
+                  <ProtectedRoute>
+                    <ParentLetterGenerator />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminPanel />
                   </ProtectedRoute>
                 } 
               />

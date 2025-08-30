@@ -37,7 +37,13 @@ def serve_react_app(path):
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>LehrKI - AI-Powered Educational Platform</title>
+            <title>LehrKI - AI-Powered Educational Platform | Modern EdTech Solution</title>
+            <meta name="description" content="Transform education with LehrKI's AI-powered platform. Create quizzes, generate parent letters, and manage assessments with advanced analytics. Multilingual support for German, French, Italian, and English.">
+            <meta name="keywords" content="AI education, EdTech, quiz creator, parent letters, assessment platform, multilingual education, LehrKI">
+            <meta property="og:title" content="LehrKI - AI-Powered Educational Platform">
+            <meta property="og:description" content="Transform education with AI-powered tools for quiz creation, assessment, and parent communication.">
+            <meta property="og:type" content="website">
+            <link rel="canonical" href="https://lehrki.ch/">
             <script src="https://cdn.tailwindcss.com"></script>
             <script>
                 tailwind.config = {
