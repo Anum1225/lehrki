@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, MessageSquare, Heart, Reply, Plus, Search, Filter } from 'lucide-react';
+import { Users, MessageCircle, Heart, Reply, Search, Filter, Plus, MessageSquare } from 'lucide-react';
+import SidebarLayout from '../components/SidebarLayout';
+import CreatePostModal from '../components/CreatePostModal';
+import PostDetailModal from '../components/PostDetailModal';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const CommunityForum = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-
-  const categories = [
-    { id: 'all', label: 'All Topics', count: 156 },
-    { id: 'teaching-tips', label: 'Teaching Tips', count: 42 },
-    { id: 'technology', label: 'Educational Technology', count: 38 },
-    { id: 'assessment', label: 'Assessment Strategies', count: 31 },
-    { id: 'classroom-management', label: 'Classroom Management', count: 25 },
-    { id: 'ai-tools', label: 'AI in Education', count: 20 }
-  ];
-
-  const posts = [
+  const [createPostModalOpen, setCreatePostModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [posts, setPosts] = useState([
     {
       id: 1,
       title: "How do you integrate AI tools into your daily teaching routine?",
@@ -64,7 +61,47 @@ const CommunityForum = () => {
       excerpt: "Share your tips for creating an engaging tech-enabled classroom without breaking the budget...",
       isHot: true
     }
+  ]);
+  const { addNotification } = useNotifications();
+
+  const handleCreatePost = (newPost) => {
+    const post = {
+      id: Date.now(),
+      ...newPost,
+      author: "You",
+      authorRole: "Teacher",
+      replies: 0,
+      likes: 0,
+      timeAgo: "just now",
+      excerpt: newPost.content.substring(0, 100) + "...",
+      isHot: false
+    };
+    setPosts([post, ...posts]);
+    addNotification({
+      type: 'success',
+      title: 'Post Created',
+      message: 'Your post has been published successfully!'
+    });
+  };
+
+  const handleLike = (postId) => {
+    setPosts(posts.map(post => 
+      post.id === postId 
+        ? { ...post, likes: post.likes + 1 }
+        : post
+    ));
+  };
+
+  const categories = [
+    { id: 'all', label: 'All Topics', count: 156 },
+    { id: 'teaching-tips', label: 'Teaching Tips', count: 42 },
+    { id: 'technology', label: 'Educational Technology', count: 38 },
+    { id: 'assessment', label: 'Assessment Strategies', count: 31 },
+    { id: 'classroom-management', label: 'Classroom Management', count: 25 },
+    { id: 'ai-tools', label: 'AI in Education', count: 20 }
   ];
+
+
 
   const featuredDiscussions = [
     {
@@ -87,8 +124,9 @@ const CommunityForum = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SidebarLayout>
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,7 +140,10 @@ const CommunityForum = () => {
                 <p className="text-gray-600">Connect, share, and learn with educators worldwide</p>
               </div>
             </div>
-            <button className="btn-primary flex items-center">
+            <button 
+              onClick={() => setCreatePostModalOpen(true)}
+              className="btn-primary flex items-center"
+            >
               <Plus className="w-4 h-4 mr-2" />
               New Post
             </button>
@@ -223,22 +264,43 @@ const CommunityForum = () => {
                       </div>
                     </div>
 
-                    <h2 className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary-600 cursor-pointer">
+                    <h2 
+                      className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary-600 cursor-pointer"
+                      onClick={() => {
+                        setSelectedPost(post);
+                        setShowPostModal(true);
+                      }}
+                    >
                       {post.title}
                     </h2>
                     <p className="text-gray-600 mb-4">{post.excerpt}</p>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-6">
-                        <button className="flex items-center text-gray-500 hover:text-primary-600 transition-colors">
+                        <button 
+                          className="flex items-center text-gray-500 hover:text-primary-600 transition-colors"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setShowPostModal(true);
+                          }}
+                        >
                           <MessageSquare className="w-4 h-4 mr-1" />
                           <span className="text-sm">{post.replies} replies</span>
                         </button>
-                        <button className="flex items-center text-gray-500 hover:text-red-600 transition-colors">
+                        <button 
+                          onClick={() => handleLike(post.id)}
+                          className="flex items-center text-gray-500 hover:text-red-600 transition-colors"
+                        >
                           <Heart className="w-4 h-4 mr-1" />
                           <span className="text-sm">{post.likes} likes</span>
                         </button>
-                        <button className="flex items-center text-gray-500 hover:text-primary-600 transition-colors">
+                        <button 
+                          className="flex items-center text-gray-500 hover:text-primary-600 transition-colors"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setShowPostModal(true);
+                          }}
+                        >
                           <Reply className="w-4 h-4 mr-1" />
                           <span className="text-sm">Reply</span>
                         </button>
@@ -258,8 +320,28 @@ const CommunityForum = () => {
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
-    </div>
+      
+      <CreatePostModal
+        isOpen={createPostModalOpen}
+        onClose={() => setCreatePostModalOpen(false)}
+        onSubmit={handleCreatePost}
+      />
+      
+      <PostDetailModal
+        isOpen={showPostModal}
+        onClose={() => setShowPostModal(false)}
+        post={selectedPost}
+        onReply={(reply) => {
+          addNotification({
+            type: 'success',
+            title: 'Reply Posted',
+            message: 'Your reply has been added successfully!'
+          });
+        }}
+      />
+    </SidebarLayout>
   );
 };
 

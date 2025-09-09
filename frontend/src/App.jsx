@@ -5,11 +5,15 @@ import { Toaster } from 'react-hot-toast';
 
 // Pages
 import LandingPage from './pages/LandingPage';
-import Dashboard from './pages/Dashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import StudentDashboard from './pages/StudentDashboard';
 import QuizCreator from './pages/QuizCreator';
 import AssessmentCenter from './pages/AssessmentCenter';
 import CommunityForum from './pages/CommunityForum';
 import Analytics from './pages/Analytics';
+import AIServices from './pages/AIServices';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ParentLetterGenerator from './pages/ParentLetterGenerator';
@@ -21,28 +25,55 @@ import AdminPanel from './pages/AdminPanel';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatBot from './components/ChatBot';
+import LiveChatWidget from './components/LiveChatWidget';
+
 
 // Contexts
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { MembershipProvider } from './contexts/MembershipContext';
+import './i18n';
+import './styles/globals.css';
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
+      <NotificationProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <MembershipProvider>
+              <AuthProvider>
+                <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <div className="min-h-screen bg-gray-50">
-            <Navbar />
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route 
-                path="/dashboard" 
+                path="/teacher-dashboard" 
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <TeacherDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route
+                path="/admin-dashboard"
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/student-dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <StudentDashboard />
                   </ProtectedRoute>
                 } 
               />
@@ -70,21 +101,29 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/analytics" 
+              <Route
+                path="/analytics"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredFeature="advanced_analytics">
                     <Analytics />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route 
-                path="/parent-letters" 
+              <Route
+                path="/ai-services"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredFeature="ai_quiz_generation">
+                    <AIServices />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/parent-letters"
+                element={
+                  <ProtectedRoute requiredFeature="parent_letter_generation">
                     <ParentLetterGenerator />
                   </ProtectedRoute>
-                } 
+                }
               />
               <Route path="/pricing" element={<Pricing />} />
               <Route 
@@ -95,20 +134,25 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/admin" 
+              <Route
+                path="/admin"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute adminOnly={true}>
                     <AdminPanel />
                   </ProtectedRoute>
-                } 
+                }
               />
             </Routes>
+            <LiveChatWidget />
             <ChatBot />
             <Toaster position="top-right" />
           </div>
-        </Router>
-      </AuthProvider>
+                </Router>
+              </AuthProvider>
+            </MembershipProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </NotificationProvider>
     </QueryClientProvider>
   );
 }

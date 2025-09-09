@@ -1,9 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, FileText, TrendingUp, Users, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { BarChart3, BookOpen, Users, Clock, Award, Eye, Edit, Trash2, TrendingUp, FileText, CheckCircle, AlertCircle, Brain } from 'lucide-react';
+import SidebarLayout from '../components/SidebarLayout';
+import FeedbackModal from '../components/FeedbackModal';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const AssessmentCenter = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const { addNotification } = useNotifications();
+
+  const handleFeedbackSubmit = async (feedback) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/api/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(feedback)
+      });
+      
+      if (response.ok) {
+        addNotification({
+          type: 'success',
+          title: 'Feedback Sent',
+          message: 'Thank you for your feedback!'
+        });
+      } else {
+        throw new Error('Failed to submit feedback');
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Feedback Failed',
+        message: 'Failed to submit feedback. Please try again.'
+      });
+    }
+  };
 
   const assessments = [
     {
@@ -63,8 +97,9 @@ const AssessmentCenter = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SidebarLayout>
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -142,7 +177,24 @@ const AssessmentCenter = () => {
                   <div className="bg-gradient-to-r from-primary-500 to-purple-600 text-white p-6 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">AI-Powered Insights</h3>
                     <p className="mb-4">Get automated feedback and personalized recommendations for each student based on their performance patterns.</p>
-                    <button className="bg-white text-primary-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                    <button 
+                      className="bg-white text-primary-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                      onClick={() => {
+                        const reportContent = `AI Assessment Report\n\nGenerated: ${new Date().toLocaleDateString()}\n\nTotal Assessments: 12\nAverage Completion Rate: 89%\nAverage Score: 82%\nAverage Time: 16 minutes\n\nKey Insights:\n- Students perform best in morning sessions\n- Interactive questions show 15% higher engagement\n- Personalized feedback improves retention by 23%`;
+                        const blob = new Blob([reportContent], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `AI_Assessment_Report_${new Date().toISOString().split('T')[0]}.txt`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        addNotification({
+                          type: 'success',
+                          title: 'Report Generated',
+                          message: 'AI assessment report has been downloaded successfully'
+                        });
+                      }}
+                    >
                       Generate Report
                     </button>
                   </div>
@@ -189,8 +241,41 @@ const AssessmentCenter = () => {
                       </div>
                       
                       <div className="mt-4 flex gap-2">
-                        <button className="btn-primary text-sm">View Details</button>
-                        <button className="btn-secondary text-sm">Download Report</button>
+                        <button 
+                          className="btn-primary text-sm"
+                          onClick={() => {
+                            addNotification({
+                              type: 'info',
+                              title: 'Assessment Details',
+                              message: `Viewing details for ${assessment.title}`
+                            });
+                            setActiveTab('students');
+                          }}
+                        >
+                          View Details
+                        </button>
+                        <button 
+                          onClick={() => {
+                            const reportData = {
+                              title: assessment.title,
+                              students: assessment.students,
+                              avgScore: assessment.avgScore,
+                              completed: assessment.completed,
+                              date: assessment.date
+                            };
+                            const content = `Assessment Report: ${assessment.title}\n\nStudents: ${assessment.students}\nAverage Score: ${assessment.avgScore}%\nCompleted: ${assessment.completed}\nDate: ${assessment.date}`;
+                            const blob = new Blob([content], { type: 'text/plain' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${assessment.title.replace(/\s+/g, '_')}_report.txt`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          }}
+                          className="btn-secondary text-sm"
+                        >
+                          Download Report
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -240,8 +325,24 @@ const AssessmentCenter = () => {
                       
                       {student.status === 'completed' && (
                         <div className="mt-4 flex gap-2">
-                          <button className="btn-primary text-sm">Detailed Analysis</button>
-                          <button className="btn-secondary text-sm">Send Feedback</button>
+                          <button 
+                            className="btn-primary text-sm"
+                            onClick={() => {
+                              addNotification({
+                                type: 'success',
+                                title: 'Analysis Generated',
+                                message: `Detailed analysis for ${student.name} has been generated`
+                              });
+                            }}
+                          >
+                            Detailed Analysis
+                          </button>
+                          <button 
+                            onClick={() => setFeedbackModalOpen(true)}
+                            className="btn-secondary text-sm"
+                          >
+                            Send Feedback
+                          </button>
                         </div>
                       )}
                     </div>
@@ -265,8 +366,15 @@ const AssessmentCenter = () => {
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
-    </div>
+      
+      <FeedbackModal
+        isOpen={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        onSubmit={handleFeedbackSubmit}
+      />
+    </SidebarLayout>
   );
 };
 

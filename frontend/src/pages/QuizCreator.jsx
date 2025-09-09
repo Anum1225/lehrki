@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Plus, Trash2, Edit3, Save, Play } from 'lucide-react';
+import SidebarLayout from '../components/SidebarLayout';
+import { apiService } from '../services/api';
 
 const QuizCreator = () => {
   const [quiz, setQuiz] = useState({
@@ -36,37 +38,198 @@ const QuizCreator = () => {
     }
   };
 
+  const deleteQuestion = (questionId) => {
+    setQuiz(prev => ({
+      ...prev,
+      questions: prev.questions.filter(q => q.id !== questionId)
+    }));
+  };
+
+  const editQuestion = (questionId) => {
+    const questionToEdit = quiz.questions.find(q => q.id === questionId);
+    if (questionToEdit) {
+      setCurrentQuestion(questionToEdit);
+      deleteQuestion(questionId);
+    }
+  };
+
+  const saveQuizDraft = async () => {
+    if (!quiz.title || quiz.questions.length === 0) {
+      alert('Please add a title and at least one question');
+      return;
+    }
+
+    try {
+      await apiService.quizzes.create({
+        ...quiz,
+        is_public: false,
+        questions: quiz.questions.map((q, index) => ({
+          ...q,
+          order_index: index
+        }))
+      });
+
+      alert('Quiz saved successfully!');
+      // Reset form
+      setQuiz({
+        title: '',
+        description: '',
+        topic: '',
+        level: 'beginner',
+        language: 'en',
+        questions: []
+      });
+    } catch (error) {
+      console.error('Save error:', error);
+      if (error.code === 'ERR_NETWORK') {
+        alert('Backend server unavailable. Quiz saved locally for demo.');
+        // Reset form for demo
+        setQuiz({
+          title: '',
+          description: '',
+          topic: '',
+          level: 'beginner',
+          language: 'en',
+          questions: []
+        });
+      } else {
+        alert('Failed to save quiz. Please try again.');
+      }
+    }
+  };
+
+  const publishQuiz = async () => {
+    if (!quiz.title || quiz.questions.length === 0) {
+      alert('Please add a title and at least one question');
+      return;
+    }
+
+    try {
+      await apiService.quizzes.create({
+        ...quiz,
+        is_public: true,
+        questions: quiz.questions.map((q, index) => ({
+          ...q,
+          order_index: index
+        }))
+      });
+
+      alert('Quiz published successfully!');
+      // Reset form
+      setQuiz({
+        title: '',
+        description: '',
+        topic: '',
+        level: 'beginner',
+        language: 'en',
+        questions: []
+      });
+    } catch (error) {
+      console.error('Publish error:', error);
+      if (error.code === 'ERR_NETWORK') {
+        alert('Backend server unavailable. Quiz published locally for demo.');
+        // Reset form for demo
+        setQuiz({
+          title: '',
+          description: '',
+          topic: '',
+          level: 'beginner',
+          language: 'en',
+          questions: []
+        });
+      } else {
+        alert('Failed to publish quiz. Please try again.');
+      }
+    }
+  };
+
   const generateWithAI = async () => {
+    if (!quiz.topic || !quiz.level) {
+      alert('Please fill in topic and difficulty level first');
+      return;
+    }
+
     setIsAIGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
-      const aiQuestions = [
-        {
-          id: Date.now(),
-          question_text: "What is the capital of France?",
-          question_type: "multiple_choice",
-          options: ["London", "Berlin", "Paris", "Madrid"],
-          correct_answer: "Paris"
-        },
-        {
-          id: Date.now() + 1,
-          question_text: "The Earth revolves around the Sun.",
-          question_type: "true_false",
-          options: ["True", "False"],
-          correct_answer: "True"
-        }
-      ];
+    try {
+      const response = await apiService.quizzes.generate({
+        topic: quiz.topic,
+        level: quiz.level,
+        language: quiz.language,
+        num_questions: 5
+      });
+
+      const data = response.data;
+      
+      // Check if this is a demo response or actual API response
+      if (data.demo || !data.questions) {
+        throw new Error('Backend unavailable');
+      }
+      
+      const aiQuestions = data.questions.map((q, index) => ({
+        id: Date.now() + index,
+        question_text: q.question_text,
+        question_type: q.question_type,
+        options: q.options || [],
+        correct_answer: q.correct_answer
+      }));
+      
       setQuiz(prev => ({
         ...prev,
         questions: [...prev.questions, ...aiQuestions]
       }));
+    } catch (error) {
+      console.error('AI generation error:', error);
+      // Fallback to template questions
+      const fallbackQuestions = generateFallbackQuestions(quiz.topic, quiz.level);
+      setQuiz(prev => ({
+        ...prev,
+        questions: [...prev.questions, ...fallbackQuestions]
+      }));
+      alert('Backend unavailable. Generated template questions for demo.');
+    } finally {
       setIsAIGenerating(false);
-    }, 2000);
+    }
+  };
+
+  const generateFallbackQuestions = (topic, level) => {
+    const templates = {
+      'mathematics': [
+        {
+          question_text: `What is the basic principle of ${topic}?`,
+          question_type: 'multiple_choice',
+          options: ['Option A', 'Option B', 'Option C', 'Option D'],
+          correct_answer: 'Option A'
+        },
+        {
+          question_text: `True or False: ${topic} is important in ${level} level studies.`,
+          question_type: 'true_false',
+          options: ['True', 'False'],
+          correct_answer: 'True'
+        }
+      ],
+      'science': [
+        {
+          question_text: `Explain the main concept of ${topic}.`,
+          question_type: 'short_answer',
+          options: [],
+          correct_answer: `The main concept involves understanding the fundamental principles of ${topic}.`
+        }
+      ]
+    };
+    
+    const topicKey = topic.toLowerCase().includes('math') ? 'mathematics' : 'science';
+    const questions = templates[topicKey] || templates['science'];
+    
+    return questions.map((q, index) => ({
+      id: Date.now() + index,
+      ...q
+    }));
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SidebarLayout>
+      <div className="py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -257,11 +420,11 @@ const QuizCreator = () => {
                   Questions ({quiz.questions.length})
                 </h2>
                 <div className="flex gap-2">
-                  <button className="btn-secondary flex items-center">
+                  <button onClick={saveQuizDraft} className="btn-secondary flex items-center">
                     <Save className="w-4 h-4 mr-2" />
                     Save Draft
                   </button>
-                  <button className="btn-primary flex items-center">
+                  <button onClick={publishQuiz} className="btn-primary flex items-center">
                     <Play className="w-4 h-4 mr-2" />
                     Publish Quiz
                   </button>
@@ -304,10 +467,10 @@ const QuizCreator = () => {
                       </div>
                       
                       <div className="flex gap-2 ml-4">
-                        <button className="p-2 text-gray-400 hover:text-gray-600">
+                        <button onClick={() => editQuestion(question.id)} className="p-2 text-gray-400 hover:text-gray-600">
                           <Edit3 className="w-4 h-4" />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-red-600">
+                        <button onClick={() => deleteQuestion(question.id)} className="p-2 text-gray-400 hover:text-red-600">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -318,8 +481,9 @@ const QuizCreator = () => {
             </div>
           )}
         </motion.div>
+        </div>
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 

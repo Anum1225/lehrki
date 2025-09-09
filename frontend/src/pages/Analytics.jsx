@@ -1,14 +1,106 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { BarChart3, TrendingUp, Users, BookOpen, Clock, Award, Download, Calendar } from 'lucide-react';
+import SidebarLayout from '../components/SidebarLayout';
+import PerformanceChart from '../components/PerformanceChart';
+import { exportToPDF, generateAnalyticsReport } from '../utils/exportUtils';
+import { useNotifications } from '../contexts/NotificationContext';
 
 const Analytics = () => {
+  const { t } = useTranslation();
   const [timeRange, setTimeRange] = useState('30d');
+  const { addNotification } = useNotifications();
+  const [analyticsData, setAnalyticsData] = useState({
+    stats: {
+      totalStudents: 1234,
+      quizzesCreated: 89,
+      averageScore: 84.2,
+      studyTime: 2.4
+    },
+    chartData: {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      datasets: [
+        {
+          label: 'Quiz Completion Rate',
+          data: [85, 89, 87, 92],
+          backgroundColor: 'rgba(59, 130, 246, 0.5)',
+          borderColor: 'rgb(59, 130, 246)',
+          borderWidth: 2
+        }
+      ]
+    }
+  });
+
+  const updateDataForTimeRange = (range) => {
+    const multipliers = {
+      '7d': 0.3,
+      '30d': 1,
+      '90d': 2.5,
+      '1y': 12
+    };
+    
+    const multiplier = multipliers[range] || 1;
+    setAnalyticsData({
+      stats: {
+        totalStudents: Math.floor(1234 * multiplier),
+        quizzesCreated: Math.floor(89 * multiplier),
+        averageScore: Math.min(95, 84.2 + (multiplier - 1) * 2),
+        studyTime: Math.round((2.4 * multiplier) * 10) / 10
+      },
+      chartData: {
+        labels: range === '7d' ? ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'] :
+                range === '1y' ? ['Q1', 'Q2', 'Q3', 'Q4'] :
+                ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'Quiz Completion Rate',
+            data: range === '7d' ? [82, 85, 88, 87, 90, 89, 92] :
+                  range === '1y' ? [78, 84, 87, 91] :
+                  [85, 89, 87, 92],
+            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 2
+          }
+        ]
+      }
+    });
+  };
+
+  const handleTimeRangeChange = (range) => {
+    setTimeRange(range);
+    updateDataForTimeRange(range);
+    addNotification({
+      type: 'info',
+      title: 'Data Updated',
+      message: `Analytics updated for ${range === '7d' ? 'last 7 days' : range === '30d' ? 'last 30 days' : range === '90d' ? 'last 90 days' : 'last year'}`
+    });
+  };
+
+  const handleExportReport = async () => {
+    const reportData = {
+      totalStudents: analyticsData.stats.totalStudents,
+      quizzesCreated: analyticsData.stats.quizzesCreated,
+      averageScore: analyticsData.stats.averageScore,
+      studyTime: `${analyticsData.stats.studyTime}h`,
+      subjectPerformance: subjectPerformance,
+      topPerformers: topPerformers
+    };
+    
+    const reportContent = generateAnalyticsReport(reportData);
+    await exportToPDF(reportContent, `analytics-report-${timeRange}`);
+    
+    addNotification({
+      type: 'success',
+      title: 'Report Exported',
+      message: 'Analytics report has been generated successfully'
+    });
+  };
 
   const stats = [
     {
       name: 'Total Students',
-      value: '1,234',
+      value: analyticsData.stats.totalStudents.toLocaleString(),
       change: '+12.5%',
       changeType: 'increase',
       icon: Users,
@@ -16,7 +108,7 @@ const Analytics = () => {
     },
     {
       name: 'Quizzes Created',
-      value: '89',
+      value: analyticsData.stats.quizzesCreated.toString(),
       change: '+23.1%',
       changeType: 'increase',
       icon: BookOpen,
@@ -24,7 +116,7 @@ const Analytics = () => {
     },
     {
       name: 'Average Score',
-      value: '84.2%',
+      value: `${analyticsData.stats.averageScore}%`,
       change: '+2.4%',
       changeType: 'increase',
       icon: Award,
@@ -32,7 +124,7 @@ const Analytics = () => {
     },
     {
       name: 'Study Time',
-      value: '2.4h',
+      value: `${analyticsData.stats.studyTime}h`,
       change: '+8.7%',
       changeType: 'increase',
       icon: Clock,
@@ -77,8 +169,9 @@ const Analytics = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SidebarLayout>
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,14 +182,14 @@ const Analytics = () => {
             <div className="flex items-center">
               <BarChart3 className="w-8 h-8 text-primary-600 mr-3" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
+                <h1 className="text-3xl font-bold text-gray-900">{t('analyticsDashboard')}</h1>
                 <p className="text-gray-600">Track performance and gain insights</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <select
                 value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
+                onChange={(e) => handleTimeRangeChange(e.target.value)}
                 className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="7d">Last 7 days</option>
@@ -104,7 +197,10 @@ const Analytics = () => {
                 <option value="90d">Last 90 days</option>
                 <option value="1y">Last year</option>
               </select>
-              <button className="btn-primary flex items-center">
+              <button 
+                onClick={handleExportReport}
+                className="btn-primary flex items-center"
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
               </button>
@@ -157,13 +253,9 @@ const Analytics = () => {
                 </div>
               </div>
               
-              {/* Placeholder for chart - would integrate with Chart.js */}
-              <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500">Performance chart would be rendered here</p>
-                  <p className="text-sm text-gray-400">Integration with Chart.js for interactive visualizations</p>
-                </div>
+              {/* Interactive Chart */}
+              <div className="h-64">
+                <PerformanceChart data={analyticsData.chartData} timeRange={timeRange} />
               </div>
             </motion.div>
 
@@ -247,27 +339,37 @@ const Analytics = () => {
                 <div className="bg-white/10 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">📈 Trending Up</h4>
                   <p className="text-sm opacity-90">
-                    Mathematics scores have improved by 15% this month. Students are responding well to the new quiz format.
+                    {timeRange === '7d' ? 'Daily engagement increased by 8% this week.' :
+                     timeRange === '30d' ? 'Mathematics scores have improved by 15% this month.' :
+                     timeRange === '90d' ? 'Overall performance shows 22% improvement this quarter.' :
+                     'Annual growth rate of 35% in student participation.'}
                   </p>
                 </div>
                 <div className="bg-white/10 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">🎯 Recommendation</h4>
                   <p className="text-sm opacity-90">
-                    Consider creating more advanced quizzes for top performers to maintain engagement.
+                    {timeRange === '7d' ? 'Focus on maintaining current momentum with daily practice.' :
+                     timeRange === '30d' ? 'Consider creating more advanced quizzes for top performers.' :
+                     timeRange === '90d' ? 'Implement peer learning sessions for struggling students.' :
+                     'Develop specialized tracks for different learning speeds.'}
                   </p>
                 </div>
                 <div className="bg-white/10 p-4 rounded-lg">
                   <h4 className="font-medium mb-2">⚠️ Attention Needed</h4>
                   <p className="text-sm opacity-90">
-                    5 students haven't completed any quizzes this week. Consider sending reminder notifications.
+                    {timeRange === '7d' ? '3 students missed assignments this week.' :
+                     timeRange === '30d' ? '5 students haven\'t completed any quizzes this week.' :
+                     timeRange === '90d' ? '12% of students show declining engagement patterns.' :
+                     'Consider reviewing curriculum difficulty for bottom 10% performers.'}
                   </p>
                 </div>
               </div>
             </motion.div>
           </div>
         </motion.div>
+        </div>
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 

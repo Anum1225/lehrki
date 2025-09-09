@@ -1,0 +1,25 @@
+[project]
+name = "lehrki"
+version = "0.1.0"
+description = "AI-powered educational platform with FastAPI backend"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "sqlalchemy>=2.0.25",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.1",
+    "fastapi-jwt-auth>=0.5.0",
+    "passlib[bcrypt]>=1.7.4",
+    "authlib>=1.3.0",
+    "openai>=1.3.5",
+    "weasyprint>=61.2",
+    "stripe>=6.6.0",
+    "fastapi-babel>=0.0.9",
+    "fastapi-cors>=0.0.6",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.26.0",
+    "email-validator>=2.3.0",
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.2",
+]

@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  BookOpen, 
-  Brain, 
-  Users, 
-  MessageCircle, 
-  BarChart3, 
-  CheckCircle, 
+import { useTranslation } from 'react-i18next';
+import ChatBot from '../components/ChatBot';
+import {
+  BookOpen,
+  Brain,
+  Users,
+  MessageCircle,
+  BarChart3,
+  CheckCircle,
   Star,
   ArrowRight,
-  PlayCircle,
   Shield,
   Globe,
-  Zap
+  Zap,
+  Menu,
+  X,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  Github
 } from 'lucide-react';
 
 const LandingPage = () => {
+  const { t } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
+  };
+
   const features = [
     {
       icon: BookOpen,
@@ -73,8 +95,8 @@ const LandingPage = () => {
   const pricingPlans = [
     {
       name: "Basic",
-      price: "$10",
-      tokens: "1,000",
+      price: "Free",
+      tokens: "500",
       features: [
         "AI Quiz Creator",
         "Basic Analytics",
@@ -110,10 +132,142 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen landing-page">
+      {/* Enhanced Navigation Header for Landing Page */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Enhanced Logo */}
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="bg-gradient-to-r from-primary-600 to-purple-600 text-white p-3 rounded-xl mr-4 shadow-lg">
+                <BookOpen className="w-7 h-7" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
+                  LehrKI
+                </span>
+                <span className="text-xs text-gray-500 font-medium tracking-wide">
+                  AI-Powered Education
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Enhanced Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              <motion.button 
+                onClick={() => scrollToSection('features')} 
+                className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                whileHover={{ y: -1 }}
+              >
+                {t('features')}
+              </motion.button>
+              <motion.button 
+                onClick={() => scrollToSection('testimonials')} 
+                className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                whileHover={{ y: -1 }}
+              >
+                {t('testimonials')}
+              </motion.button>
+              <motion.button 
+                onClick={() => scrollToSection('pricing')} 
+                className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                whileHover={{ y: -1 }}
+              >
+                {t('pricing')}
+              </motion.button>
+              <motion.button 
+                onClick={() => scrollToSection('contact')} 
+                className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                whileHover={{ y: -1 }}
+              >
+                {t('contact')}
+              </motion.button>
+              <motion.a 
+                href="/register" 
+                className="bg-gradient-to-r from-primary-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200 ml-4"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {t('getStarted')}
+              </motion.a>
+            </div>
+
+            {/* Enhanced Mobile menu button */}
+            <div className="md:hidden">
+              <motion.button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 p-2 rounded-lg transition-all duration-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  animate={{ rotate: isMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </motion.div>
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Enhanced Mobile Navigation */}
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden py-6 border-t border-gray-200/50 bg-white/95 backdrop-blur-sm"
+            >
+              <div className="flex flex-col space-y-2">
+                <motion.button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
+                  whileHover={{ x: 4 }}
+                >
+                  {t('features')}
+                </motion.button>
+                <motion.button 
+                  onClick={() => scrollToSection('testimonials')} 
+                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
+                  whileHover={{ x: 4 }}
+                >
+                  {t('testimonials')}
+                </motion.button>
+                <motion.button 
+                  onClick={() => scrollToSection('pricing')} 
+                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
+                  whileHover={{ x: 4 }}
+                >
+                  {t('pricing')}
+                </motion.button>
+                <motion.button 
+                  onClick={() => scrollToSection('contact')} 
+                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
+                  whileHover={{ x: 4 }}
+                >
+                  {t('contact')}
+                </motion.button>
+                <motion.a 
+                  href="/register" 
+                  className="bg-gradient-to-r from-primary-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold text-center block mt-4 shadow-lg"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {t('getStarted')}
+                </motion.a>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="hero-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+      <section id="hero" className="relative overflow-hidden pt-20 bg-gradient-to-br from-pink-50 via-blue-50 to-yellow-50">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-100/30 to-rose-100/30"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <div className="text-center">
@@ -129,26 +283,19 @@ const LandingPage = () => {
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                LehrKI empowers educators with intelligent tools for quiz creation, assessment, 
+                LehrKI empowers educators with intelligent tools for quiz creation, assessment,
                 and student engagement. Experience the future of education today.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button
+                <motion.a
+                  href="/register"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="btn-primary text-lg px-8 py-4"
+                  className="bg-gradient-to-r from-primary-600 to-purple-600 text-white text-lg px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 inline-flex items-center"
                 >
                   Start Free Trial
                   <ArrowRight className="ml-2 w-5 h-5" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-secondary text-lg px-8 py-4"
-                >
-                  <PlayCircle className="mr-2 w-5 h-5" />
-                  Watch Demo
-                </motion.button>
+                </motion.a>
               </div>
             </motion.div>
           </div>
@@ -177,7 +324,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section id="features" className="py-20 bg-gradient-to-b from-green-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -211,7 +358,7 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="testimonials" className="py-20 bg-gradient-to-r from-purple-50 via-pink-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -249,7 +396,7 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 bg-white">
+      <section id="pricing" className="py-20 bg-gradient-to-b from-indigo-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -291,21 +438,24 @@ const LandingPage = () => {
                     </li>
                   ))}
                 </ul>
-                <button className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+                <a 
+                  href="/register"
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 text-center block ${
                   plan.popular 
                     ? 'bg-primary-600 text-white hover:bg-primary-700' 
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 }`}>
                   Get Started
-                </button>
+                </a>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-600 to-purple-600">
+      <section className="py-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -316,22 +466,24 @@ const LandingPage = () => {
             <h2 className="text-4xl font-bold text-white mb-6">
               Ready to Transform Your Teaching?
             </h2>
-            <p className="text-xl text-blue-100 mb-8">
-              Join thousands of educators who are already using LehrKI to create 
+            <p className="text-xl text-white mb-8">
+              Join thousands of educators who are already using LehrKI to create
               more engaging and effective learning experiences.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
+              <motion.a
+                href="/register"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white text-primary-600 font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+                className="bg-white text-gray-900 font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors inline-block"
               >
                 Start Your Free Trial
-              </motion.button>
+              </motion.a>
               <motion.button
+                onClick={() => scrollToSection('contact')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-primary-600 transition-colors"
+                className="border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-gray-900 transition-colors"
               >
                 Contact Sales
               </motion.button>
@@ -339,6 +491,187 @@ const LandingPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer id="contact" className="bg-gradient-to-b from-slate-800 to-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center mb-4">
+                <div className="bg-primary-600 text-white p-2 rounded-lg mr-3">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <span className="text-2xl font-bold">LehrKI</span>
+              </div>
+              <p className="text-gray-300 mb-6 max-w-md">
+                Empowering educators worldwide with AI-powered tools for creating engaging quizzes, 
+                assessments, and educational content. Transform your teaching experience today.
+              </p>
+              <div className="flex space-x-3">
+                <motion.a 
+                  href="#" 
+                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                >
+                  <Facebook className="w-5 h-5" />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                >
+                  <Twitter className="w-5 h-5" />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                >
+                  <Linkedin className="w-5 h-5" />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                >
+                  <Instagram className="w-5 h-5" />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                >
+                  <Github className="w-5 h-5" />
+                </motion.a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-3">
+                <li>
+                  <motion.button 
+                    onClick={() => scrollToSection('features')} 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 text-left"
+                    whileHover={{ x: 4 }}
+                  >
+                    Features
+                  </motion.button>
+                </li>
+                <li>
+                  <motion.button 
+                    onClick={() => scrollToSection('pricing')} 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 text-left"
+                    whileHover={{ x: 4 }}
+                  >
+                    Pricing
+                  </motion.button>
+                </li>
+                <li>
+                  <motion.a 
+                    href="#" 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block"
+                    whileHover={{ x: 4 }}
+                  >
+                    Docs
+                  </motion.a>
+                </li>
+                <li>
+                  <motion.a 
+                    href="#" 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block"
+                    whileHover={{ x: 4 }}
+                  >
+                    API
+                  </motion.a>
+                </li>
+                <li>
+                  <motion.a 
+                    href="#" 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block"
+                    whileHover={{ x: 4 }}
+                  >
+                    Support
+                  </motion.a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <Mail className="w-5 h-5 text-gray-400 mr-3" />
+                  <span className="text-gray-300">hello@lehrki.com</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-5 h-5 text-gray-400 mr-3" />
+                  <span className="text-gray-300">+1 (555) 123-4567</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="w-5 h-5 text-gray-400 mr-3" />
+                  <span className="text-gray-300">San Francisco, CA</span>
+                </div>
+              </div>
+
+              {/* Newsletter Signup */}
+              <div className="mt-6">
+                <h4 className="text-md font-semibold mb-3">Stay Updated</h4>
+                <div className="flex rounded-xl overflow-hidden shadow-lg">
+                  <input
+                    type="email"
+                    placeholder="Your email"
+                    className="flex-1 px-4 py-3 bg-gray-800 border-0 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <motion.button 
+                    className="bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 px-6 py-3 transition-all duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div className="text-gray-400 text-sm mb-4 md:mb-0">
+              © 2024 LehrKI. All rights reserved.
+            </div>
+            <div className="flex space-x-6 text-sm">
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -1 }}
+              >
+                Privacy
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -1 }}
+              >
+                Terms
+              </motion.a>
+              <motion.a 
+                href="#" 
+                className="text-gray-400 hover:text-white transition-colors"
+                whileHover={{ y: -1 }}
+              >
+                Cookies
+              </motion.a>
+            </div>
+          </div>
+        </div>
+      </footer>
+      
+      {/* ChatBot Widget */}
+      <ChatBot />
     </div>
   );
 };

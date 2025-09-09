@@ -1,0 +1,1 @@
+# LehrKI Backend Application
