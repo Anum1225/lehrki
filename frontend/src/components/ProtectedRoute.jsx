@@ -5,7 +5,7 @@ import { useMembership } from '../contexts/MembershipContext';
 
 const ProtectedRoute = ({ children, requiredFeature, adminOnly = false }) => {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
-  const { membership, loading: membershipLoading } = useMembership();
+  const { membership, hasAccess, loading: membershipLoading } = useMembership();
   const location = useLocation();
 
   // Show loading while checking authentication and membership
@@ -23,12 +23,12 @@ const ProtectedRoute = ({ children, requiredFeature, adminOnly = false }) => {
   }
 
   // Check admin-only access
-  if (adminOnly && user?.role !== 'ADMIN') {
+  if (adminOnly && user?.role !== 'admin') {
     return <Navigate to="/student-dashboard" replace />;
   }
 
-  // Check feature access for non-admin users
-  if (requiredFeature && !membership.isAdmin && !membership.hasAccess(requiredFeature)) {
+  // Check feature access for non-admin users (admins bypass all restrictions)
+  if (requiredFeature && user?.role !== 'admin' && !hasAccess(requiredFeature)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">

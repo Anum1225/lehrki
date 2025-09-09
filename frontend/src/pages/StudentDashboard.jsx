@@ -89,19 +89,19 @@ const StudentDashboard = () => {
           studyStreak: 5, // This could be calculated from user activity
           upcomingDeadlines: [], // This could be fetched from assignments/quizzes
           recentActivities: [
-            ...quizzes.slice(0, 2).map(q => ({
+            ...(Array.isArray(quizzes) ? quizzes.slice(0, 2).map(q => ({
               id: q.id,
               type: 'quiz_completed',
               title: `Completed ${q.title}`,
               score: 85,
               time: '2 hours ago'
-            })),
-            ...parentLetters.slice(0, 1).map(l => ({
+            })) : []),
+            ...(Array.isArray(parentLetters) ? parentLetters.slice(0, 1).map(l => ({
               id: l.id,
               type: 'letter_generated',
               title: `Generated ${l.title}`,
               time: '1 day ago'
-            }))
+            })) : [])
           ]
         }));
       } catch (error) {

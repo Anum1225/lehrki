@@ -45,8 +45,8 @@ function App() {
       <NotificationProvider>
         <ThemeProvider>
           <LanguageProvider>
-            <MembershipProvider>
-              <AuthProvider>
+            <AuthProvider>
+              <MembershipProvider>
                 <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <div className="min-h-screen bg-gray-50">
             <Routes>
@@ -148,8 +148,8 @@ function App() {
             <Toaster position="top-right" />
           </div>
                 </Router>
-              </AuthProvider>
-            </MembershipProvider>
+              </MembershipProvider>
+            </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
       </NotificationProvider>

@@ -58,6 +58,17 @@ export const AuthProvider = ({ children }) => {
       created_at: new Date().toISOString(),
       token_balance: 5000
     },
+    'admin@lehrki.com': {
+      id: 'admin-lehrki-demo',
+      email: 'admin@lehrki.com',
+      first_name: 'Admin',
+      last_name: 'LehrKI',
+      role: 'admin',
+      language_preference: 'en',
+      profile_image_url: null,
+      created_at: new Date().toISOString(),
+      token_balance: 5000
+    },
     'teacher@devchef.com': {
       id: 'teacher-demo',
       email: 'teacher@devchef.com',
@@ -132,6 +143,20 @@ export const AuthProvider = ({ children }) => {
           token_balance: 5000
         }
       },
+      'admin@lehrki.com': {
+        password: import.meta.env.VITE_DEMO_ADMIN_PASSWORD || 'admin123',
+        user: {
+          id: 'admin-lehrki-demo',
+          email: 'admin@lehrki.com',
+          first_name: 'Admin',
+          last_name: 'LehrKI',
+          role: 'admin',
+          language_preference: 'en',
+          profile_image_url: null,
+          created_at: new Date().toISOString(),
+          token_balance: 5000
+        }
+      },
       'teacher@devchef.com': {
         password: import.meta.env.VITE_DEMO_TEACHER_PASSWORD || 'teacher123',
         user: {
@@ -165,6 +190,7 @@ export const AuthProvider = ({ children }) => {
     // Check demo credentials first
     const demoCredentials = {
       'admin@devchef.com': import.meta.env.VITE_DEMO_ADMIN_PASSWORD || 'admin123',
+      'admin@lehrki.com': import.meta.env.VITE_DEMO_ADMIN_PASSWORD || 'admin123',
       'teacher@devchef.com': import.meta.env.VITE_DEMO_TEACHER_PASSWORD || 'teacher123',
       'student@devchef.com': import.meta.env.VITE_DEMO_STUDENT_PASSWORD || 'student123'
     };

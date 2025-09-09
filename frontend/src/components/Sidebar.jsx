@@ -47,7 +47,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         { name: 'Assessment', icon: BarChart3, href: '/assessment' },
         { name: 'Community', icon: MessageSquare, href: '/community' },
         { name: 'Analytics', icon: TrendingUp, href: '/analytics' },
-        { name: 'Advanced Analytics', icon: Activity, href: '/advanced-analytics' },
         { name: 'Profile', icon: Users, href: '/profile' },
         { name: 'Pricing', icon: CreditCard, href: '/pricing' }
       ];
@@ -61,7 +60,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         { name: 'Parent Letters', icon: FileText, href: '/parent-letters' },
         { name: 'Community', icon: MessageSquare, href: '/community' },
         { name: 'Analytics', icon: TrendingUp, href: '/analytics' },
-        { name: 'Advanced Analytics', icon: Activity, href: '/advanced-analytics' },
         { name: 'Profile', icon: Users, href: '/profile' }
       ];
     }

@@ -82,23 +82,23 @@ const TeacherDashboard = () => {
             monthlyGrowth: 12.5,
             activeAssignments: Array.isArray(quizzes) ? quizzes.length : 0
           },
-          recentClasses: quizzes.slice(0, 4).map((quiz, index) => ({
+          recentClasses: Array.isArray(quizzes) ? quizzes.slice(0, 4).map((quiz, index) => ({
             id: quiz.id,
             name: quiz.title,
             students: 25 + index * 5, // Mock student count
             lastActivity: '2 hours ago',
             progress: 80 + index * 5
-          })),
-          recentQuizzes: quizzes.slice(0, 4).map((quiz, index) => ({
+          })) : [],
+          recentQuizzes: Array.isArray(quizzes) ? quizzes.slice(0, 4).map((quiz, index) => ({
             id: quiz.id,
             title: quiz.title,
             class: quiz.topic || 'General',
             submissions: 20 + index * 3,
             avgScore: 85 + index * 2,
             status: index === 0 ? 'active' : index === 1 ? 'completed' : 'grading'
-          })),
+          })) : [],
           notifications: [
-            { id: 1, type: 'assignment', message: `${quizzes.length} quiz submissions to review`, time: '30 min ago' },
+            { id: 1, type: 'assignment', message: `${Array.isArray(quizzes) ? quizzes.length : 0} quiz submissions to review`, time: '30 min ago' },
             { id: 2, type: 'student', message: 'New student enrolled in your class', time: '1 hour ago' },
             { id: 3, type: 'system', message: 'Monthly analytics report available', time: '2 hours ago' }
           ]
@@ -141,8 +141,8 @@ const TeacherDashboard = () => {
       description: 'Build interactive quizzes with AI assistance',
       icon: BookOpen,
       href: '/quiz-creator',
-      color: 'bg-blue-500',
-      gradient: 'from-blue-500 to-blue-600'
+      color: 'bg-indigo-500',
+      gradient: 'from-indigo-500 to-indigo-600'
     },
     {
       title: 'Grade Assessments',
@@ -269,7 +269,7 @@ const TeacherDashboard = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                <GraduationCap className="h-6 w-6 mr-2 text-blue-600" />
+                <GraduationCap className="h-6 w-6 mr-2 text-indigo-600" />
                 My Classes
               </h2>
               <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 px-2 py-1 transition-colors">
@@ -355,12 +355,12 @@ const TeacherDashboard = () => {
                 >
                   <div className="flex items-start space-x-3">
                     <div className={`p-2 rounded-lg ${
-                      notification.type === 'assignment' ? 'bg-blue-100' :
-                      notification.type === 'student' ? 'bg-green-100' : 'bg-purple-100'
+                      notification.type === 'assignment' ? 'bg-orange-100' :
+                      notification.type === 'student' ? 'bg-emerald-100' : 'bg-indigo-100'
                     }`}>
-                      {notification.type === 'assignment' ? <FileText className="h-4 w-4 text-blue-600" /> :
-                       notification.type === 'student' ? <MessageSquare className="h-4 w-4 text-green-600" /> :
-                       <Settings className="h-4 w-4 text-purple-600" />}
+                      {notification.type === 'assignment' ? <FileText className="h-4 w-4 text-orange-600" /> :
+                       notification.type === 'student' ? <MessageSquare className="h-4 w-4 text-emerald-600" /> :
+                       <Settings className="h-4 w-4 text-indigo-600" />}
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">{notification.message}</p>
