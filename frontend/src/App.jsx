@@ -125,7 +125,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/pro" element={<Pricing />} />
               <Route 
                 path="/profile" 
                 element={

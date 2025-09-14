@@ -172,13 +172,13 @@ const LandingPage = () => {
               >
                 {t('testimonials')}
               </motion.button>
-              <motion.button 
-                onClick={() => scrollToSection('pricing')} 
+              <motion.a 
+                href="/pro" 
                 className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
                 whileHover={{ y: -1 }}
               >
-                {t('pricing')}
-              </motion.button>
+                Pro
+              </motion.a>
               <motion.button 
                 onClick={() => scrollToSection('contact')} 
                 className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-lg font-medium transition-all duration-200"
@@ -237,13 +237,13 @@ const LandingPage = () => {
                 >
                   {t('testimonials')}
                 </motion.button>
-                <motion.button 
-                  onClick={() => scrollToSection('pricing')} 
-                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
+                <motion.a 
+                  href="/pro" 
+                  className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all block"
                   whileHover={{ x: 4 }}
                 >
-                  {t('pricing')}
-                </motion.button>
+                  Pro
+                </motion.a>
                 <motion.button 
                   onClick={() => scrollToSection('contact')} 
                   className="text-left text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-4 py-3 rounded-lg font-medium transition-all"
@@ -439,13 +439,13 @@ const LandingPage = () => {
                   ))}
                 </ul>
                 <a 
-                  href="/register"
+                  href="/pro"
                   className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 text-center block ${
                   plan.popular 
                     ? 'bg-primary-600 text-white hover:bg-primary-700' 
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                 }`}>
-                  Get Started
+                  View Plans
                 </a>
               </motion.div>
             ))}
@@ -479,14 +479,14 @@ const LandingPage = () => {
               >
                 Start Your Free Trial
               </motion.a>
-              <motion.button
-                onClick={() => scrollToSection('contact')}
+              <motion.a
+                href="/pro"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-gray-900 transition-colors"
+                className="border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-gray-900 transition-colors inline-block"
               >
-                Contact Sales
-              </motion.button>
+                View Pricing
+              </motion.a>
             </div>
           </motion.div>
         </div>
@@ -561,13 +561,13 @@ const LandingPage = () => {
                   </motion.button>
                 </li>
                 <li>
-                  <motion.button 
-                    onClick={() => scrollToSection('pricing')} 
-                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 text-left"
+                  <motion.a 
+                    href="/pro" 
+                    className="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block"
                     whileHover={{ x: 4 }}
                   >
-                    Pricing
-                  </motion.button>
+                    Pro Plans
+                  </motion.a>
                 </li>
                 <li>
                   <motion.a 
